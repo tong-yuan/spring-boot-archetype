@@ -1,0 +1,69 @@
+server:
+  port: 8080
+
+#日志
+logging:
+  level:
+    org.springframework.web: info
+
+
+#mysql
+spring:
+  profiles:
+    active: dev
+  task:
+    pool:
+      corePoolSize:1
+      maxPoolSize:10
+      keepAliveSeconds:60
+      queueCapacity:5
+  datasource:
+    url: jdbc:mysql://localhost/spring_boot_demo?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    database: 0
+    password: admin
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+      shutdown-timeout: 100ms
+    cluster:
+      nodes: 192.168.0.2:6379,192.168.0.3:6379,192.168.0.4:6379,192.168.0.5:6379,192.168.0.6:6379,192.168.0.7:6379
+
+  cache:
+    type: redis
+
+  session:
+    store-type: redis
+    redis:
+      namespace: session #session名称前缀
+      cleanup-cron: 0 0/15 * * * ? #session超时任务执行策略，该corn表达式表示每15分钟执行一次
+
+mybatis-plus:
+  config-location: classpath:/mapper/*Mapper.xml #java包下用：classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  typeAliasesPackage: com.yourpackage.*.entity #实体类扫描，多个目录用','分割
+  global-config:
+    id-type: 1 #主键类型 :"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    field-strategy: 2 #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    db-column-underline: false  #驼峰下划线转换
+    refresh-mapper: true #刷新mapper 调试神器
+    capital-mode: false #数据库大写下划线转换
+    key-generator: com.baomidou.mybatisplus.incrementer.OracleKeyGenerator # Sequence序列接口实现类配置
+    #逻辑删除配置（下面3个配置）
+    logic-delete-value: 1
+    logic-not-delete-value: 0
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+    #meta-object-handler: com.baomidou.springboot.MyMetaObjectHandler #自定义填充策略接口实现
+    configuration:
+      #map-underscore-to-camel-case: true
+      #cache-enabled: false
+      #配置JdbcTypeForNull
+      #jdbc-type-for-null: 'null'
+
+
